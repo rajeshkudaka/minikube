@@ -134,10 +134,12 @@ func StartHost(api libmachine.API, config cfg.MachineConfig) (*host.Host, error)
 	e := engineOptions(config)
 	glog.Infof("engine options: %+v", e)
 
-	out.T(out.Waiting, "Waiting for the host to be provisioned ...")
-	err = configureHost(h, e)
-	if err != nil {
-		return nil, err
+	if !localDriver(h.Driver.DriverName()) {
+		out.T(out.Waiting, "Waiting for the host to be provisioned ...")
+		err = configureHost(h, e)
+		if err != nil {
+			return nil, err
+		}
 	}
 	return h, nil
 }
